@@ -12,27 +12,6 @@ A comunicação entre os nós é realizada através do gRPC + protocol buffer.
 
 O sistema de diretórios segue este padrão:
 
-/nome_da_pasta_do_nó/
-├── node.py                         # O script principal do sistema de versionamento
-└── meu_repositorio_distribuido/    # A pasta raiz do repositório versionado
-    ├── src/                        # --> Diretório de Trabalho
-    │   ├── arquivo_de_texto.txt
-    │   ├── codigo_fonte.py
-    │   └── imagens/
-    │       └── imagem.png
-    └── .repo_meta/                 # --> Diretório de Metadados do Repositório (oculto)
-        ├── commits.json            # Armazena o histórico de commits (ID, mensagem, timestamp, arquivos)
-        └── versions/               # Armazena as diferentes versões dos arquivos por commit
-            ├── commit_id_12345/    # Versão completa dos arquivos no commit 12345
-            │   ├── src/            # Recria a estrutura interna do `src/` para esta versão
-            │   │   ├── arquivo_de_texto.txt
-            │   │   ├── codigo_fonte.py
-            │   │   └── imagens/
-            │   │       └── imagem.png
-            ├── commit_id_abcde/    # Versão completa dos arquivos no commit abcde
-            │   └── src/
-            │       ├── arquivo_de_texto.txt
-            │       └── codigo_fonte_nova.py
-            └── ... (outros diretórios de commits)
+![Captura de tela de 2025-06-10 15-45-11](https://github.com/user-attachments/assets/005d7fed-f716-4581-a29d-e1d8cdc5a7bd)
 
 
