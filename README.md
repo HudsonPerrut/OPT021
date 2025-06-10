@@ -8,6 +8,7 @@ Em cada nó há um cliente e um servidor. O Cliente possui a função de adicion
 ![SDDiagrama](https://github.com/user-attachments/assets/0250f27e-5f0f-43d2-8589-d0523b66ff87) 
 
 A comunicação entre os nós é realizada através do gRPC + protocol buffer.
+
 O sistema de diretórios segue este padrão:
 /nome_da_pasta_do_nó/
 ├── node.py                         # O script principal do sistema de versionamento
