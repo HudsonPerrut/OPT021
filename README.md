@@ -3,6 +3,7 @@
 Sistema de versionamento de arquivos entre duas máquinas.
 
 A arquitetura do sistema é utilizando o modelo P2P.
+
 Em cada nó há um cliente e um servidor. O Cliente possui a função de adicionar arquivos a uma branch, realizar um comiit e solicitar push/pull request para o servidor do outro nó.
  
 ![SDDiagrama](https://github.com/user-attachments/assets/0250f27e-5f0f-43d2-8589-d0523b66ff87) 
@@ -10,6 +11,7 @@ Em cada nó há um cliente e um servidor. O Cliente possui a função de adicion
 A comunicação entre os nós é realizada através do gRPC + protocol buffer.
 
 O sistema de diretórios segue este padrão:
+
 /nome_da_pasta_do_nó/
 ├── node.py                         # O script principal do sistema de versionamento
 └── meu_repositorio_distribuido/    # A pasta raiz do repositório versionado
