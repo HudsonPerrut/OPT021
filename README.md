@@ -19,6 +19,8 @@ Principais Características:
 - Tolerância a falhas: Um nó continua em funcionamento mesmo com a parada de outro 
 
 O sistema de diretórios segue este padrão:
+
+
 <img width="339" height="564" alt="Captura de tela de 2025-07-10 18-49-30" src="https://github.com/user-attachments/assets/db8fb579-bb8a-44a6-acf7-92f50108d339" />
 
 
