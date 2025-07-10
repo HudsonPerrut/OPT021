@@ -23,6 +23,16 @@ O sistema de diretórios segue este padrão:
 
 <img width="339" height="564" alt="Captura de tela de 2025-07-10 18-49-30" src="https://github.com/user-attachments/assets/db8fb579-bb8a-44a6-acf7-92f50108d339" />
 
+# Como executar os códigos
+
+abra o diretorio "projeto_a" em um terminal e execute:
+
+```
+$ make
+$ python3 peer.py
+```
+realize o mesmo processo no diretório "projeto b".
+
 
 
 
