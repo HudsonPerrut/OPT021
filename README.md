@@ -1,5 +1,7 @@
 # Repositório da matéria de Sistemas Distribuídos - OPT021
 
+Link para apresentação do sistema: https://youtu.be/FdbLXPkyqQg
+
 Este projeto implementa um sistema distribuído para versionamento de arquivos de texto, operando em uma arquitetura Peer-to-Peer (P2P).
 
 O objetivo principal é garantir a consistência de dados e gerenciar conflitos de edição entre 2 nós sem a necessidade de um servidor central (próximos passos implementar a multiplos nós).
