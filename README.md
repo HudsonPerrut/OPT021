@@ -33,6 +33,8 @@ $ python3 peer.py
 ```
 realize o mesmo processo no diretório "projeto b".
 
+Após isso, crie/edite arquivos dentro de cada "workspace" e siga os comandos apresentados no terminal para realizar commits, sync e resolves.
+
 
 
 
