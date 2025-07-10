@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package versioning;
+
+// O serviço principal de versionamento
+service Versioning {
+  // Envia uma lista de arquivos e suas versões que o peer possui
+  rpc GetFileList(Empty) returns (FileList);
+
+  // Pede o conteúdo de um arquivo específico
+  rpc GetFile(FileRequest) returns (FileContent);
+
+  // "Empurra" um novo arquivo ou uma nova versão para o outro peer
+  rpc PushFile(FileContent) returns (PushResponse);
+}
+
+// Mensagem vazia para RPCs sem argumentos
+message Empty {}
+
+// Informação de um único arquivo (sem o conteúdo)
+message FileInfo {
+  string filename = 1;
+  // Relógio vetorial para versionamento
+  map<string, int64> vector_clock = 2;
+}
+
+// Lista de todos os arquivos que um peer gerencia
+message FileList {
+  repeated FileInfo files = 1;
+}
+
+// Requisição para buscar um arquivo específico
+message FileRequest {
+  string filename = 1;
+}
+
+// Conteúdo e metadados completos de um arquivo
+message FileContent {
+  string filename = 1;
+  bytes content = 2;
+  map<string, int64> vector_clock = 3;
+}
+
+// Resposta a um PushFile
+message PushResponse {
+  string message = 1;
+  bool success = 2;
+}
