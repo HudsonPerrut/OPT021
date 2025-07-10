@@ -13,10 +13,10 @@ A consistência e detecção de conflitos, é obtida através da implementação
 <img width="2160" height="2496" alt="Arquitetura" src="https://github.com/user-attachments/assets/9706143b-f306-4a38-bb6c-d86f7fc3eccc" />
 
 Principais Características:
--> Consistência: Detecção de conflitos baseada em Relógios Vetoriais.
--> Replicação de Dados: Os arquivos são replicados em todos os peers, garantindo alta disponibilidade.
--> Persistência: O estado e os metadados de versionamento são mantidos localmente em arquivos JSON.
--> Tolerância a falhas: Um nó continua em funcionamento mesmo com a parada de outro 
+- Consistência: Detecção de conflitos baseada em Relógios Vetoriais.
+- Replicação de Dados: Os arquivos são replicados em todos os peers, garantindo alta disponibilidade.
+- Persistência: O estado e os metadados de versionamento são mantidos localmente em arquivos JSON.
+- Tolerância a falhas: Um nó continua em funcionamento mesmo com a parada de outro 
 
 O sistema de diretórios segue este padrão:
 <img width="339" height="564" alt="Captura de tela de 2025-07-10 18-49-30" src="https://github.com/user-attachments/assets/db8fb579-bb8a-44a6-acf7-92f50108d339" />
