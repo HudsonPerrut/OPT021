@@ -6,7 +6,7 @@ A arquitetura do sistema é utilizando o modelo P2P.
 
 Em cada nó há um cliente e um servidor. O Cliente possui a função de adicionar arquivos a uma branch, realizar um comiit e solicitar push/pull request para o servidor do outro nó.
  
-![SDDiagrama](https://github.com/user-attachments/assets/0250f27e-5f0f-43d2-8589-d0523b66ff87) 
+<img width="2160" height="2496" alt="Arquitetura" src="https://github.com/user-attachments/assets/9706143b-f306-4a38-bb6c-d86f7fc3eccc" />
 
 A comunicação entre os nós é realizada através do gRPC + protocol buffer.
 
