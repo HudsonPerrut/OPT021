@@ -1,3 +1,10 @@
+"""
+    Cabeçalho do peer.py
+    Criado por: Hudson Taylor Perrut Cassim
+    Data: 09/10/2025
+    Finalidade: Implementar um sistema distribuído para versionamento de arquivos de texto, operando em uma arquitetura Peer-to-Peer;
+"""
+
 import grpc
 from concurrent import futures
 import time
@@ -17,8 +24,11 @@ METADATA_FILE = f"{PEER_ID}/metadata.json"
 
 metadata = {}
 
+"""
+    Finalidade: Carrega os metadados do arquivo JSON no array metadada {}
+    Parâmetros: -
+"""
 def load_metadata():
-    """Carrega os metadados do arquivo JSON."""
     global metadata
     if os.path.exists(METADATA_FILE):
         with open(METADATA_FILE, 'r') as f:
@@ -30,13 +40,19 @@ def load_metadata():
     else:
         metadata = {}
 
-def save_metadata():
-    """Salva os metadados no arquivo JSON."""
+"""
+    Finalidade: Salva os metadados do array metadada {} no arquivo JSON
+    Parâmetros: -
+"""
+def save_metadata():"
     with open(METADATA_FILE, 'w') as f:
         json.dump(metadata, f, indent=2)
 
+"""
+    Finalidade: Verifica se o relógio vetorial c1 domina (é mais novo que) c2.
+    Parâmetros: c1 - Relógio Vetorial; c2 - Relógio Vetorial
+"""
 def is_newer(c1, c2):
-    """Verifica se o relógio vetorial c1 domina (é mais novo que) c2."""
     at_least_one_greater = False
     all_keys = set(c1.keys()) | set(c2.keys())
     for k in all_keys:
@@ -48,17 +64,22 @@ def is_newer(c1, c2):
             at_least_one_greater = True
     return at_least_one_greater
 
+"""
+    Finalidade: Verifica se há conflito entre c1 e c2 (concorrência)
+    Parâmetros: c1 - Relógio Vetorial; c2 - Relógio Vetorial
+"""
 def is_conflict(c1, c2):
-    """Verifica se há conflito entre c1 e c2 (concorrência)."""
     if c1 == c2:
         return False
     return not is_newer(c1, c2) and not is_newer(c2, c1)
 
+"""
+    Finalidade: Implementação da classe do servidor gRPC.
+    Parâmetros: versioning_pb2_grpc gerado a partir do .proto
+"""
 class VersioningServicer(versioning_pb2_grpc.VersioningServicer):
-    """Implementação do servidor gRPC."""
-
+    """Retorna a lista de arquivos e seus relógios vetoriais."""
     def GetFileList(self, request, context):
-        """Retorna a lista de arquivos e seus relógios vetoriais."""
         print(f"[{PEER_ID}-Servidor] Recebido GetFileList.")
         file_list = []
         for filename, data in metadata.items():
@@ -66,8 +87,8 @@ class VersioningServicer(versioning_pb2_grpc.VersioningServicer):
             file_list.append(versioning_pb2.FileInfo(filename=filename, vector_clock=vc))
         return versioning_pb2.FileList(files=file_list)
 
+    """Retorna o conteúdo de um arquivo específico."""
     def GetFile(self, request, context):
-        """Retorna o conteúdo de um arquivo específico."""
         filename = request.filename
         print(f"[{PEER_ID}-Servidor] Recebido GetFile para '{filename}'.")
         filepath = os.path.join(WORKSPACE_DIR, filename)
@@ -80,13 +101,11 @@ class VersioningServicer(versioning_pb2_grpc.VersioningServicer):
         context.set_details(f"Arquivo '{filename}' não encontrado no servidor.")
         return versioning_pb2.FileContent()
 
+    """Recebe um arquivo de outro peer e decide se o aceita."""
     def PushFile(self, request, context):
-        """Recebe um arquivo de outro peer e decide se o aceita."""
         filename = request.filename
         incoming_vc = dict(request.vector_clock)
-        
-        # --- CORREÇÃO CRÍTICA (LEITURA) ---
-        # Extrai corretamente o relógio vetorial local da estrutura aninhada para comparação.
+
         local_vc = metadata.get(filename, {}).get("vector_clock", {})
         
         print(f"[{PEER_ID}-Servidor] PushFile '{filename}'. Remoto: {incoming_vc}, Local: {local_vc}")
@@ -97,8 +116,6 @@ class VersioningServicer(versioning_pb2_grpc.VersioningServicer):
             with open(filepath, 'wb') as f:
                 f.write(request.content)
             
-            # --- CORREÇÃO CRÍTICA (ESCRITA) ---
-            # Salva os metadados mantendo a estrutura aninhada correta.
             metadata[filename] = {"vector_clock": incoming_vc}
             save_metadata()
             return versioning_pb2.PushResponse(success=True, message="Arquivo atualizado.")
@@ -123,8 +140,11 @@ class VersioningServicer(versioning_pb2_grpc.VersioningServicer):
             print(f"[{PEER_ID}-Servidor] Versão de '{filename}' recebida é mais antiga ou igual. Ignorando.")
             return versioning_pb2.PushResponse(success=False, message="Versão local já é mais nova ou igual.")
 
+"""
+    Finalidade: Inicia o servidor gRPC em uma thread separada.
+    Parâmetros: -
+"""
 def serve():
-    """Inicia o servidor gRPC em uma thread separada."""
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     versioning_pb2_grpc.add_VersioningServicer_to_server(VersioningServicer(), server)
     server.add_insecure_port(f'[::]:{MY_PORT}')
@@ -132,13 +152,19 @@ def serve():
     print(f"[{PEER_ID}-Servidor] Servidor iniciado na porta {MY_PORT}.")
     server.wait_for_termination()
 
+"""
+    Finalidade: Cria uma conexão com o outro peer.
+    Parâmetros: -
+"""
 def get_peer_stub():
-    """Cria uma conexão (stub) com o outro peer."""
     channel = grpc.insecure_channel(f'localhost:{PEER_PORT}')
     return versioning_pb2_grpc.VersioningStub(channel)
 
+"""
+    Finalidade: Cria uma nova versão de um arquivo localmente e a envia ao outro peer.
+    Parâmetros: filename - nome do arquivo a ser gerado o commit
+"""
 def commit_local_change(filename):
-    """Cria uma nova versão de um arquivo localmente e a envia ao outro peer."""
     filepath = os.path.join(WORKSPACE_DIR, filename)
     if not os.path.exists(filepath):
         print(f"Erro: Arquivo '{filepath}' não existe para commit.")
@@ -175,8 +201,11 @@ def commit_local_change(filename):
     except grpc.RpcError as e:
         print(f"[{PEER_ID}-Cliente] Erro ao contatar o outro peer: {e.details()}")
 
+"""
+    Finalidade: Sincroniza com o outro peer.
+    Parâmetros:
+"""
 def synchronize():
-    """Sincroniza com o outro peer de forma eficiente."""
     print(f"\n[{PEER_ID}-Cliente] Iniciando sincronização com o peer na porta {PEER_PORT}...")
     try:
         stub = get_peer_stub()
@@ -213,8 +242,11 @@ def synchronize():
     except grpc.RpcError as e:
         print(f"[{PEER_ID}-Cliente] Não foi possível conectar ao outro peer para sincronizar: {e.details()}")
 
+"""
+    Finalidade: Mostra um status formatado dos arquivos gerenciados.
+    Parâmetros: -
+"""
 def show_status():
-    """Mostra um status formatado dos arquivos gerenciados."""
     print("\n--- Status dos Arquivos ---")
     if not metadata:
         print("Nenhum arquivo sendo gerenciado.")
@@ -233,8 +265,11 @@ def show_status():
             print(f"   - Versão (VC): {vc}")
     print("---------------------------\n")
 
+"""
+    Finalidade: Resolve um conflito após a mesclagem manual do usuário.
+    Parâmetros: - filename - nome do arquivo a ser resolvido
+"""
 def resolve_conflict(filename):
-    """Resolve um conflito após a mesclagem manual do usuário."""
     if filename not in metadata or not metadata[filename].get('in_conflict'):
         print(f"Erro: O arquivo '{filename}' não está marcado como em conflito.")
         return
@@ -270,6 +305,10 @@ def resolve_conflict(filename):
     except grpc.RpcError as e:
         print(f"ERRO ao contatar o outro peer: {e.details()}")
 
+"""
+    Finalidade: Função principal do peer
+    Parâmetros:
+"""
 if __name__ == '__main__':
     if not os.path.exists(f"{PEER_ID}"):
         os.makedirs(f"{PEER_ID}")
